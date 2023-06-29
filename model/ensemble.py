@@ -1,7 +1,13 @@
+from keras.models import clone_model
+from keras.optimizers import Adam
+from utils.metrics import msle, rmse
+from keras.callbacks import EarlyStopping
+import numpy as np
+
 num_models = 5
 ensemble_predictions = []
 
-def create_ensemble():
+def create_ensemble(best_model, X_train_padded, y_train, X_test_padded, y_test):
     for _ in range(num_models):
         model_clone = clone_model(best_model)
         model_clone.set_weights(best_model.get_weights())
@@ -13,4 +19,4 @@ def create_ensemble():
     ensemble_mean = np.mean(ensemble_predictions, axis=0)
     ensemble_mape = np.mean(np.abs(y_test - ensemble_mean) / y_test) * 100
     print('Ensemble Mean MAPE:', ensemble_mape)
-    
+    return ensemble_mean, ensemble_mape

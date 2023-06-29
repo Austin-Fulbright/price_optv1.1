@@ -3,10 +3,9 @@ from keras.layers import Embedding, LSTM, Dense, Dropout
 from keras.regularizers import l2
 from keras.initializers import GlorotUniform
 from keras.optimizers import Adam
-from kerastuner.tuners import RandomSearch
 from utils.metrics import msle, rmse
 
-def build_model(hp):
+def build_model(tokenizer, max_sequence_length, hp):
     model = Sequential()
     model.add(Embedding(len(tokenizer.word_index) + 1, hp.Int('embedding_dim', min_value=50, max_value=200, step=50), input_length=max_sequence_length))
     model.add(LSTM(hp.Int('lstm_units', min_value=64, max_value=256, step=64), return_sequences=True, kernel_initializer=GlorotUniform(seed=42), recurrent_regularizer=l2(1e-5)))
